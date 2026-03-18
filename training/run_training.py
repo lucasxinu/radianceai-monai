@@ -5,12 +5,14 @@ Pipeline completo de treinamento de segmentação com MONAI.
 Otimizado para RunPod GPUs (AMP, cuDNN benchmark, torch.compile).
 """
 
+import argparse
 import os
 import sys
 import yaml
 import torch
 import numpy as np
 import torch.nn.functional as F
+from PIL import Image
 from pathlib import Path
 from torch.amp import autocast, GradScaler
 
@@ -137,7 +139,15 @@ def load_manifest(manifest_path):
 
 def main():
     # ── Config ─────────────────────────────────────────
-    config_path = PROJECT_ROOT / "configs" / "train_segmentation.yaml"
+    parser = argparse.ArgumentParser(description="RadianceAI MONAI Training")
+    parser.add_argument(
+        "--config",
+        default=str(PROJECT_ROOT / "configs" / "train_segmentation.yaml"),
+        help="Caminho do arquivo de configuração YAML",
+    )
+    args = parser.parse_args()
+
+    config_path = Path(args.config)
     with open(config_path, "r") as f:
         config = yaml.safe_load(f)
 
@@ -160,6 +170,15 @@ def main():
     train_cfg.setdefault("learning_rate", _get_cfg(config, "learning_rate", 1e-3))
     train_cfg.setdefault("amp", _get_cfg(config, "amp", True))
     train_cfg.setdefault("checkpoint_name", _get_cfg(config, "checkpoint_name", "best_model.pt"))
+
+    class_map_path = _get_cfg(config, "class_map") or train_cfg.get("class_map")
+    class_map = None
+    if class_map_path:
+        class_map_file = PROJECT_ROOT / str(class_map_path)
+        if class_map_file.exists():
+            with open(class_map_file, "r", encoding="utf-8") as f:
+                class_map = json.load(f)
+            model_cfg["num_classes"] = max(int(v) for v in class_map.values()) + 1
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     use_amp = train_cfg.get("amp", True) and device.type == "cuda"
@@ -195,6 +214,20 @@ def main():
 
     train_ds = Dataset(data=train_data, transform=train_transforms)
     val_ds = Dataset(data=val_data, transform=val_transforms)
+
+    # ── Validação de labels ────────────────────────────
+    def _max_label_from_path(mask_path: str) -> int:
+        mask = Image.open(mask_path).convert("L")
+        return int(np.max(np.array(mask)))
+
+    sample_masks = [entry["label"] for entry in train_data[:5]]
+    max_label = max((_max_label_from_path(str(PROJECT_ROOT / p)) for p in sample_masks), default=0)
+    if max_label >= model_cfg.get("num_classes", 2):
+        raise ValueError(
+            f"Label inválido encontrado (max={max_label}) para num_classes={model_cfg.get('num_classes')}. "
+            "Verifique se está usando o config correto (train_segmentation_fdi.yaml) "
+            "ou gere máscaras compatíveis."
+        )
 
     num_workers = data_cfg.get("num_workers", 4)
     batch_size = train_cfg.get("batch_size", 8)
