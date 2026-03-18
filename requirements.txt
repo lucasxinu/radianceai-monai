@@ -1,6 +1,7 @@
-monai
-torch
-torchvision
-numpy
-opencv-python
-pyyaml
+monai==1.5.2
+torch==2.8.0
+torchvision==0.23.0
+numpy==2.0.2
+opencv-python==4.13.0.92
+pyyaml==6.0.3
+pillow==11.3.0

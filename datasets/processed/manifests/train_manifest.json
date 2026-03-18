@@ -1,0 +1,82 @@
+[
+  {
+    "study_id": "PAN_01",
+    "image": "./datasets/processed/images/pan_01.png",
+    "label": "./datasets/processed/masks/pan_01_mask.png"
+  },
+  {
+    "study_id": "PAN_18",
+    "image": "./datasets/processed/images/pan_18.png",
+    "label": "./datasets/processed/masks/pan_18_mask.png"
+  },
+  {
+    "study_id": "PAN_16",
+    "image": "./datasets/processed/images/pan_16.png",
+    "label": "./datasets/processed/masks/pan_16_mask.png"
+  },
+  {
+    "study_id": "PAN_02",
+    "image": "./datasets/processed/images/pan_02.png",
+    "label": "./datasets/processed/masks/pan_02_mask.png"
+  },
+  {
+    "study_id": "PAN_09",
+    "image": "./datasets/processed/images/pan_09.png",
+    "label": "./datasets/processed/masks/pan_09_mask.png"
+  },
+  {
+    "study_id": "PAN_06",
+    "image": "./datasets/processed/images/pan_06.png",
+    "label": "./datasets/processed/masks/pan_06_mask.png"
+  },
+  {
+    "study_id": "PAN_12",
+    "image": "./datasets/processed/images/pan_12.png",
+    "label": "./datasets/processed/masks/pan_12_mask.png"
+  },
+  {
+    "study_id": "PAN_04",
+    "image": "./datasets/processed/images/pan_04.png",
+    "label": "./datasets/processed/masks/pan_04_mask.png"
+  },
+  {
+    "study_id": "PAN_19",
+    "image": "./datasets/processed/images/pan_19.png",
+    "label": "./datasets/processed/masks/pan_19_mask.png"
+  },
+  {
+    "study_id": "PAN_17",
+    "image": "./datasets/processed/images/pan_17.png",
+    "label": "./datasets/processed/masks/pan_17_mask.png"
+  },
+  {
+    "study_id": "PAN_14",
+    "image": "./datasets/processed/images/pan_14.png",
+    "label": "./datasets/processed/masks/pan_14_mask.png"
+  },
+  {
+    "study_id": "PAN_03",
+    "image": "./datasets/processed/images/pan_03.png",
+    "label": "./datasets/processed/masks/pan_03_mask.png"
+  },
+  {
+    "study_id": "PAN_10",
+    "image": "./datasets/processed/images/pan_10.png",
+    "label": "./datasets/processed/masks/pan_10_mask.png"
+  },
+  {
+    "study_id": "PAN_20",
+    "image": "./datasets/processed/images/pan_20.png",
+    "label": "./datasets/processed/masks/pan_20_mask.png"
+  },
+  {
+    "study_id": "PAN_05",
+    "image": "./datasets/processed/images/pan_05.png",
+    "label": "./datasets/processed/masks/pan_05_mask.png"
+  },
+  {
+    "study_id": "PAN_13",
+    "image": "./datasets/processed/images/pan_13.png",
+    "label": "./datasets/processed/masks/pan_13_mask.png"
+  }
+]

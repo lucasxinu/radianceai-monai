@@ -1,0 +1,11 @@
+{
+  "study_id": "PAN_15",
+  "findings": {
+    "missing": 6,
+    "caries": 9,
+    "restored": 11,
+    "endodontic": 1,
+    "normal": 5,
+    "other": 4
+  }
+}

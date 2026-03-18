@@ -1,8 +1,14 @@
 task: segmentation
+num_classes: 2
 image_size: [512, 512]
-batch_size: 2
-epochs: 5
-learning_rate: 0.0001
-train_manifest: ./datasets/samples/sample_manifest.json
-val_manifest: ./datasets/samples/sample_manifest.json
-checkpoint_name: segmentation_latest.pt
+
+# GPU otimizado (RunPod A40/A100)
+batch_size: 8
+epochs: 100
+learning_rate: 0.001
+num_workers: 4
+amp: true
+
+train_manifest: ./datasets/processed/manifests/train_manifest.json
+val_manifest: ./datasets/processed/manifests/val_manifest.json
+checkpoint_name: segmentation_best.pt

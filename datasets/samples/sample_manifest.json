@@ -1,6 +1,7 @@
 [
-{
-"image": "./datasets/processed/images/sample.png",
-"label": "./datasets/processed/masks/sample_mask.png"
-}
+  {
+    "study_id": "PAN_01",
+    "image": "./datasets/processed/images/pan_01.png",
+    "label": "./datasets/processed/masks/pan_01_mask.png"
+  }
 ]
