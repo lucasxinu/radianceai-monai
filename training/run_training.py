@@ -1,247 +1,310 @@
 """
 run_training.py
 
-Loop completo de treinamento de segmentação com MONAI.
-Otimizado para GPUs NVIDIA (RunPod) com AMP e cuDNN benchmark.
-
-Uso:
-    python -m training.run_training
-    python -m training.run_training --config configs/train_segmentation.yaml
+Pipeline completo de treinamento de segmentação com MONAI.
+Otimizado para RunPod GPUs (AMP, cuDNN benchmark, torch.compile).
 """
 
-import argparse
 import os
 import sys
-import time
-from pathlib import Path
-
-import torch
 import yaml
-from torch.cuda.amp import GradScaler, autocast
-from torch.utils.data import DataLoader
+import torch
+import numpy as np
+import torch.nn.functional as F
+from pathlib import Path
+from torch.amp import autocast, GradScaler
 
-from monai_core.dataloaders.manifest_dataset import ManifestDataset
-from monai_core.losses.dice_loss import get_loss_function
-from monai_core.metrics.dice_metric import get_dice_metric
-from monai_core.models.segmentation_model import build_segmentation_model
-from monai_core.postprocessing.segmentation_post import get_post_transforms
-from monai_core.transforms.train_transforms import get_train_transforms, get_val_transforms
-
+# Adiciona o root do projeto ao path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_CONFIG = PROJECT_ROOT / "configs" / "train_segmentation.yaml"
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from monai.data import DataLoader, Dataset
+from monai.transforms import Compose, AsDiscrete, Activations
+from monai.metrics import DiceMetric
+
+from monai_core.transforms.train_transforms import get_train_transforms, get_val_transforms
+from monai_core.models.segmentation_model import build_segmentation_model
+from monai_core.losses.dice_loss import get_loss_function
+
+import json
 
 
-def load_config(config_path):
-    with open(config_path, "r") as f:
-        return yaml.safe_load(f)
+def _get_cfg(config, key, default=None):
+    """Busca chave suportando config flat ou aninhada."""
+    return config.get(key, default)
+
+
+def _get_group(config, group_name, defaults=None):
+    """Retorna grupo aninhado se existir, senão usa config flat."""
+    if group_name in config and isinstance(config[group_name], dict):
+        return config[group_name]
+    return defaults or {}
 
 
 def print_gpu_info():
-    """Mostra informações da GPU disponível."""
+    """Mostra informações da GPU."""
     if torch.cuda.is_available():
         for i in range(torch.cuda.device_count()):
             props = torch.cuda.get_device_properties(i)
-            vram = props.total_mem / (1024 ** 3)
+            vram = props.total_memory / (1024 ** 3)
             print(f"  GPU {i}: {props.name} ({vram:.1f} GB VRAM)")
-        print(f"  CUDA: {torch.version.cuda}")
-        print(f"  cuDNN: {torch.backends.cudnn.version()}")
     else:
-        print("  ⚠  Nenhuma GPU detectada — rodando em CPU")
+        print("  ⚠ Nenhuma GPU CUDA detectada")
 
 
-def train_one_epoch(model, loader, optimizer, loss_fn, scaler, device, epoch, use_amp):
+def train_one_epoch(model, loader, optimizer, loss_fn, device, epoch, use_amp=True):
+    """Treina uma época."""
     model.train()
-    epoch_loss = 0.0
-    steps = 0
+    epoch_loss = 0
+    scaler = GradScaler('cuda', enabled=use_amp)
 
-    for batch in loader:
-        images = batch["image"].to(device, non_blocking=True)
-        labels = batch["label"].to(device, non_blocking=True)
+    for batch_idx, batch_data in enumerate(loader):
+        images = batch_data["image"].to(device, non_blocking=True)
+        labels = batch_data["label"].to(device, non_blocking=True)
 
         optimizer.zero_grad(set_to_none=True)
 
-        with autocast(enabled=use_amp):
+        with autocast('cuda', enabled=use_amp):
             outputs = model(images)
             loss = loss_fn(outputs, labels)
 
-        if use_amp:
-            scaler.scale(loss).backward()
-            scaler.step(optimizer)
-            scaler.update()
-        else:
-            loss.backward()
-            optimizer.step()
+        scaler.scale(loss).backward()
+        scaler.step(optimizer)
+        scaler.update()
 
         epoch_loss += loss.item()
-        steps += 1
 
-    avg_loss = epoch_loss / max(steps, 1)
-    return avg_loss
+        if batch_idx % 5 == 0:
+            print(f"    Batch {batch_idx}/{len(loader)} — Loss: {loss.item():.4f}")
+
+    return epoch_loss / max(len(loader), 1)
 
 
-def validate(model, loader, loss_fn, dice_metric, post_pred, post_label, device, use_amp):
+def validate(model, loader, loss_fn, device, num_classes, use_amp=True):
+    """Valida o modelo e retorna loss média e Dice score."""
     model.eval()
-    val_loss = 0.0
-    steps = 0
+    epoch_loss = 0
+
+    post_pred = Compose([Activations(softmax=True), AsDiscrete(argmax=True, threshold=0.5)])
+    dice_metric = DiceMetric(include_background=True, reduction="mean", get_not_nans=False)
 
     with torch.no_grad():
-        for batch in loader:
-            images = batch["image"].to(device, non_blocking=True)
-            labels = batch["label"].to(device, non_blocking=True)
+        for batch_data in loader:
+            images = batch_data["image"].to(device, non_blocking=True)
+            labels = batch_data["label"].to(device, non_blocking=True).long()
 
-            with autocast(enabled=use_amp):
+            with autocast('cuda', enabled=use_amp):
                 outputs = model(images)
                 loss = loss_fn(outputs, labels)
 
-            val_loss += loss.item()
-            steps += 1
+            epoch_loss += loss.item()
 
-            # Dice metric (em float32 para precisão)
-            preds = post_pred(outputs.float())
-            labels_oh = post_label(labels.float())
-            dice_metric(y_pred=preds, y=labels_oh)
+            outputs_post = [post_pred(o) for o in outputs]
+            outputs_onehot = [
+                F.one_hot(o.squeeze(0).long(), num_classes).permute(2, 0, 1).unsqueeze(0).float()
+                for o in outputs_post
+            ]
+            labels_onehot = [
+                F.one_hot(l.squeeze(0).long(), num_classes).permute(2, 0, 1).unsqueeze(0).float()
+                for l in labels
+            ]
 
-    avg_loss = val_loss / max(steps, 1)
+            outputs_onehot = torch.cat(outputs_onehot, dim=0).to(device)
+            labels_onehot = torch.cat(labels_onehot, dim=0).to(device)
+
+            dice_metric(y_pred=outputs_onehot, y=labels_onehot)
+
+    mean_loss = epoch_loss / max(len(loader), 1)
     dice_score = dice_metric.aggregate().item()
     dice_metric.reset()
 
-    return avg_loss, dice_score
+    return mean_loss, dice_score
+
+
+def load_manifest(manifest_path):
+    """Carrega um manifest JSON e retorna lista de dicts com paths absolutos."""
+    with open(manifest_path, "r", encoding="utf-8") as f:
+        entries = json.load(f)
+
+    data_list = []
+    for entry in entries:
+        image_path = str(PROJECT_ROOT / entry["image"])
+        label_path = str(PROJECT_ROOT / entry["label"])
+        data_list.append({"image": image_path, "label": label_path})
+
+    return data_list
 
 
 def main():
-    parser = argparse.ArgumentParser(description="RadianceAI — Treinamento de Segmentação")
-    parser.add_argument("--config", type=str, default=str(DEFAULT_CONFIG))
-    args = parser.parse_args()
+    # ── Config ─────────────────────────────────────────
+    config_path = PROJECT_ROOT / "configs" / "train_segmentation.yaml"
+    with open(config_path, "r") as f:
+        config = yaml.safe_load(f)
 
-    # Carregar config
-    cfg = load_config(args.config)
-    print("=" * 60)
-    print("  RadianceAI — Training Pipeline (GPU Optimized)")
-    print("=" * 60)
-    print(f"  Config: {args.config}")
-    for k, v in cfg.items():
-        print(f"    {k}: {v}")
+    # suporta YAML aninhado e flat
+    train_cfg = _get_group(config, "training")
+    data_cfg = _get_group(config, "data")
+    model_cfg = _get_group(config, "model")
 
-    image_size = tuple(cfg["image_size"])
-    batch_size = cfg["batch_size"]
-    epochs = cfg["epochs"]
-    lr = cfg["learning_rate"]
-    train_manifest = cfg["train_manifest"]
-    val_manifest = cfg["val_manifest"]
-    checkpoint_name = cfg["checkpoint_name"]
-    num_classes = cfg.get("num_classes", 2)
-    num_workers = cfg.get("num_workers", 4)
-    use_amp = cfg.get("amp", True)
+    # valores fallback (flat)
+    model_cfg.setdefault("num_classes", _get_cfg(config, "num_classes", 2))
+    model_cfg.setdefault("in_channels", _get_cfg(config, "in_channels", 1))
 
-    # Device
+    data_cfg.setdefault("train_manifest", _get_cfg(config, "train_manifest"))
+    data_cfg.setdefault("val_manifest", _get_cfg(config, "val_manifest"))
+    data_cfg.setdefault("image_size", _get_cfg(config, "image_size", [512, 512]))
+    data_cfg.setdefault("num_workers", _get_cfg(config, "num_workers", 4))
+
+    train_cfg.setdefault("batch_size", _get_cfg(config, "batch_size", 8))
+    train_cfg.setdefault("epochs", _get_cfg(config, "epochs", 100))
+    train_cfg.setdefault("learning_rate", _get_cfg(config, "learning_rate", 1e-3))
+    train_cfg.setdefault("amp", _get_cfg(config, "amp", True))
+    train_cfg.setdefault("checkpoint_name", _get_cfg(config, "checkpoint_name", "best_model.pt"))
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"\n  Device: {device}")
-    print_gpu_info()
+    use_amp = train_cfg.get("amp", True) and device.type == "cuda"
 
-    # Otimizações CUDA
+    print("=" * 60)
+    print("  RadianceAI MONAI — Treinamento de Segmentação")
+    print("=" * 60)
+    print(f"  Device: {device}")
+    print_gpu_info()
+    print(f"  AMP: {use_amp}")
+    print(f"  Config: {config_path.name}")
+    print("=" * 60)
+
+    # ── GPU otimizações ────────────────────────────────
     if device.type == "cuda":
         torch.backends.cudnn.benchmark = True
         torch.backends.cuda.matmul.allow_tf32 = True
         torch.backends.cudnn.allow_tf32 = True
-        print("  ✅ cuDNN benchmark ON | TF32 ON | AMP:", "ON" if use_amp else "OFF")
 
-    # Datasets & Loaders
-    print("\n📂 Carregando datasets...")
-    train_ds = ManifestDataset(train_manifest, get_train_transforms(image_size))
-    val_ds = ManifestDataset(val_manifest, get_val_transforms(image_size))
+    # ── Dados ──────────────────────────────────────────
+    image_size = tuple(data_cfg.get("image_size", [512, 512]))
+    train_manifest = PROJECT_ROOT / data_cfg["train_manifest"]
+    val_manifest = PROJECT_ROOT / data_cfg["val_manifest"]
 
-    pin = device.type == "cuda"
+    train_data = load_manifest(train_manifest)
+    val_data = load_manifest(val_manifest)
+
+    print(f"\n📂 Train: {len(train_data)} casos")
+    print(f"📂 Val:   {len(val_data)} casos")
+
+    train_transforms = get_train_transforms(image_size=image_size)
+    val_transforms = get_val_transforms(image_size=image_size)
+
+    train_ds = Dataset(data=train_data, transform=train_transforms)
+    val_ds = Dataset(data=val_data, transform=val_transforms)
+
+    num_workers = data_cfg.get("num_workers", 4)
+    batch_size = train_cfg.get("batch_size", 8)
+
     train_loader = DataLoader(
-        train_ds, batch_size=batch_size, shuffle=True,
-        num_workers=num_workers, pin_memory=pin, persistent_workers=num_workers > 0,
+        train_ds,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=num_workers,
+        pin_memory=True,
+        persistent_workers=num_workers > 0,
     )
     val_loader = DataLoader(
-        val_ds, batch_size=batch_size, shuffle=False,
-        num_workers=num_workers, pin_memory=pin, persistent_workers=num_workers > 0,
+        val_ds,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
+        pin_memory=True,
+        persistent_workers=num_workers > 0,
     )
 
-    print(f"  Train: {len(train_ds)} amostras | batch={batch_size} | workers={num_workers}")
-    print(f"  Val:   {len(val_ds)} amostras")
+    # ── Modelo ─────────────────────────────────────────
+    num_classes = model_cfg.get("num_classes", 2)
+    in_channels = model_cfg.get("in_channels", 1)
 
-    # Modelo, Loss, Optimizer, Metrics
-    model = build_segmentation_model(num_classes=num_classes).to(device)
+    model = build_segmentation_model(
+        num_classes=num_classes,
+        in_channels=in_channels,
+    ).to(device)
+
+    # Tentar torch.compile (PyTorch 2.x)
+    try:
+        model = torch.compile(model)
+        print("✅ torch.compile ativado")
+    except Exception:
+        print("⚠ torch.compile não disponível — usando eager mode")
+
+    total_params = sum(p.numel() for p in model.parameters())
+    print(f"🧠 Modelo: DynUNet — {total_params:,} parâmetros")
+
+    # ── Loss / Optimizer / Scheduler ───────────────────
     loss_fn = get_loss_function(num_classes=num_classes)
+    lr = train_cfg.get("learning_rate", 1e-3)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-5)
+    epochs = train_cfg.get("epochs", 100)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
-    scaler = GradScaler(enabled=use_amp)
-    dice_metric = get_dice_metric(num_classes=num_classes)
-    post_pred, post_label = get_post_transforms(num_classes=num_classes)
 
-    # Compilar modelo (PyTorch 2.x)
-    if hasattr(torch, "compile") and device.type == "cuda":
-        try:
-            model = torch.compile(model)
-            print("  ✅ torch.compile ativado")
-        except Exception:
-            print("  ⚠  torch.compile não disponível, usando eager mode")
-
-    param_count = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print(f"\n🧠 Modelo: DynUNet ({num_classes} classes, {param_count:,} params)")
-    print(f"   Loss: DiceCELoss | Optimizer: AdamW (lr={lr})")
-    print(f"   Scheduler: CosineAnnealingLR | AMP: {'ON' if use_amp else 'OFF'}")
-
-    # Checkpoint dir
+    # ── Checkpoints dir ────────────────────────────────
     ckpt_dir = PROJECT_ROOT / "checkpoints"
     ckpt_dir.mkdir(parents=True, exist_ok=True)
-    ckpt_path = ckpt_dir / checkpoint_name
 
-    # Training loop
+    # ── Training loop ──────────────────────────────────
     best_dice = 0.0
-    print(f"\n🚀 Iniciando treino por {epochs} épocas...\n")
+    ckpt_name = train_cfg.get("checkpoint_name", "best_model.pt")
+    print(f"\n🚀 Iniciando treinamento — {epochs} épocas\n")
 
     for epoch in range(1, epochs + 1):
-        t0 = time.time()
+        print(f"─── Época {epoch}/{epochs} ───")
 
-        train_loss = train_one_epoch(
-            model, train_loader, optimizer, loss_fn, scaler, device, epoch, use_amp
-        )
+        # Train
+        train_loss = train_one_epoch(model, train_loader, optimizer, loss_fn, device, epoch, use_amp)
+
+        # Validate
         val_loss, dice_score = validate(
-            model, val_loader, loss_fn, dice_metric, post_pred, post_label, device, use_amp
+            model, val_loader, loss_fn, device, num_classes, use_amp
         )
 
+        # Scheduler step
         scheduler.step()
-        elapsed = time.time() - t0
+
+        # Log
         current_lr = optimizer.param_groups[0]["lr"]
+        print(f"  Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f} | Dice: {dice_score:.4f} | LR: {current_lr:.6f}")
 
-        gpu_mem = ""
+        # VRAM usage
         if device.type == "cuda":
-            mem_gb = torch.cuda.max_memory_allocated() / (1024 ** 3)
-            gpu_mem = f" | GPU Mem: {mem_gb:.1f}GB"
+            peak_mem = torch.cuda.max_memory_allocated() / (1024 ** 3)
+            print(f"  VRAM Pico: {peak_mem:.2f} GB")
 
-        print(
-            f"  [Epoch {epoch:03d}/{epochs}] "
-            f"Train: {train_loss:.4f} | Val: {val_loss:.4f} | "
-            f"Dice: {dice_score:.4f} | LR: {current_lr:.6f} | "
-            f"Time: {elapsed:.1f}s{gpu_mem}"
-        )
-
-        # Salvar melhor modelo
+        # Save best
         if dice_score > best_dice:
             best_dice = dice_score
+            ckpt_path = ckpt_dir / ckpt_name
             torch.save({
                 "epoch": epoch,
                 "model_state_dict": model.state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
-                "scheduler_state_dict": scheduler.state_dict(),
-                "scaler_state_dict": scaler.state_dict(),
-                "best_dice": best_dice,
-                "config": cfg,
+                "dice_score": dice_score,
+                "config": config,
             }, ckpt_path)
-            print(f"  💾 Checkpoint salvo: {ckpt_path.name} (Dice={best_dice:.4f})")
+            print(f"  💾 Melhor modelo salvo! Dice: {dice_score:.4f}")
 
-    # Resumo final
-    print(f"\n{'=' * 60}")
-    print(f"  ✅ Treino finalizado! Melhor Dice: {best_dice:.4f}")
-    print(f"  📁 Checkpoint: {ckpt_path}")
-    if device.type == "cuda":
-        peak = torch.cuda.max_memory_allocated() / (1024 ** 3)
-        print(f"  🎯 Pico de VRAM: {peak:.2f} GB")
-    print(f"{'=' * 60}")
+        # Save every 10 epochs
+        if epoch % 10 == 0:
+            ckpt_path = ckpt_dir / f"checkpoint_epoch_{epoch:03d}.pt"
+            torch.save({
+                "epoch": epoch,
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "dice_score": dice_score,
+                "config": config,
+            }, ckpt_path)
+
+        print()
+
+    print("=" * 60)
+    print(f"  ✅ Treinamento concluído!")
+    print(f"  🏆 Melhor Dice: {best_dice:.4f}")
+    print(f"  📂 Checkpoints: {ckpt_dir}")
+    print("=" * 60)
 
 
 if __name__ == "__main__":

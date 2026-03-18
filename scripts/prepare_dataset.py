@@ -61,9 +61,12 @@ def generate_placeholder_mask(dst_path):
     """
     Gera uma máscara zerada (placeholder) do mesmo tamanho da imagem.
     → Deve ser substituída por anotação real antes do treino.
+    Salva como grayscale single-channel PNG.
     """
     mask = np.zeros(IMAGE_SIZE, dtype=np.uint8)
-    cv2.imwrite(str(dst_path), mask)
+    from PIL import Image
+    img = Image.fromarray(mask, mode='L')
+    img.save(str(dst_path))
 
 
 def extract_classification_label(report_path):
