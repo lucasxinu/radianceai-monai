@@ -1,0 +1,92 @@
+{
+  "fileName": "LAUDO 18.jpg",
+  "extractedText": "DESCRIÇÃO RADIOGRÁFICA ORTOPANTOMOGRAFIA PERIAPICAIS E INTERPROXIMAIS\n\nSeios maxilares sem sinais de velamento.\nATM com forma e contorno normais.\nOsso maxilar e mandíbula sem alterações.\nDentição permanente sem sinais de agenesias, extranumerários ou degenerações.\nO exame radiográfico é um instrumento complementar de diagnóstico, é um auxiliar do exame clínico.\n\n18.. restauração radiopaca, cárie interproximal mesial\n17.. cárie interproximal distal\n16.. restauração radiopaca, cárie interproximal mesial e distal\n15-14.. ausentes\n13.. desgaste incisal, cárie interproximal distal\n12.. desgaste incisal, restauração plástica\n11.. fratura ângulo incisal dista, restauração plástica, espessamento apical, importante teste de\nvitalidade\n21.. desgaste incisal\n22.. desgaste incisal, cárie interproximal distal\n23.. desgaste incisal, lesão cervical distal\n24-27.. ausentes, extensão alveolar sinusal\n28.. ausente\n38.. restauração radiopaca, ectopia, perda óssea\n37.. ausente\n36.. restauração radiopaca\n35.. desgaste incisal, cárie interproximal mesial\n34.. desgaste incisal, cárie interproximal distal\n33.. ausente\n32.. desgaste incisal\n31.. desgaste incisal, cárie interproximal distal\n41.. desgaste incisal, tratamento endodôntico, alteração apical periapical para melhor detalhe e\ncontrole com radiografia anterior\n42.. desgaste incisal\n43.. ausente\n44.. restauração radiopaca, perda óssea ectopia",
+  "dentalReport": {
+    "schema_name": "fdi_odontogram_report",
+    "schema_version": "1.0",
+    "exam_type": "radiographic_dental_exam",
+    "patient": {
+      "patient_id": null,
+      "exam_id": null,
+      "exam_date": null,
+      "sex": null,
+      "birth_date": null,
+      "age": null
+    },
+    "exam_context": {
+      "source_type": "radiographic_report",
+      "modality": "ortopantomografia_periapicais_interproximais",
+      "anatomic_region": "maxilomandibular",
+      "institution": null,
+      "report_language": "pt"
+    },
+    "global_findings": {
+      "mixed_dentition": false,
+      "malocclusion": null,
+      "crowding": null,
+      "spacing": null,
+      "crossbite": null,
+      "open_bite": null,
+      "deep_bite": null,
+      "overjet": null,
+      "overbite": null,
+      "midline_deviation": null,
+      "edentulism": "partial",
+      "prostheses": null,
+      "orthodontic_appliance": null,
+      "bone_pattern": "normal",
+      "tmj_findings": "forma e contorno normais",
+      "sinus_findings": "sem sinais de velamento",
+      "soft_tissue_findings": null,
+      "notes": "Dentição permanente sem sinais de agenesias, extranumerários ou degenerações. Extensão alveolar sinusal em 24-27. ATM normal."
+    },
+    "odontogram": {
+      "11": "incisal_angle_fracture_distal, plastic_restoration, apical_thickening",
+      "12": "incisal_wear, plastic_restoration",
+      "13": "incisal_wear, distal_interproximal_caries",
+      "14": "missing",
+      "15": "missing",
+      "16": "radiopaque_restoration, mesial_and_distal_interproximal_caries",
+      "17": "distal_interproximal_caries",
+      "18": "radiopaque_restoration, mesial_interproximal_caries",
+      "21": "incisal_wear",
+      "22": "incisal_wear, distal_interproximal_caries",
+      "23": "incisal_wear, cervico_distal_lesion",
+      "24": "missing",
+      "25": "missing",
+      "26": "missing",
+      "27": "missing",
+      "28": "missing",
+      "31": "incisal_wear, distal_interproximal_caries",
+      "32": "incisal_wear",
+      "33": "missing",
+      "34": "incisal_wear, distal_interproximal_caries",
+      "35": "incisal_wear, mesial_interproximal_caries",
+      "36": "radiopaque_restoration",
+      "37": "missing",
+      "38": "radiopaque_restoration, ectopic, bone_loss",
+      "41": "incisal_wear, endodontically_treated, apical_alteration",
+      "42": "incisal_wear",
+      "43": "missing",
+      "44": "radiopaque_restoration, bone_loss, ectopic",
+      "45": null,
+      "46": null,
+      "47": null,
+      "48": null
+    },
+    "impression": {
+      "summary": [
+        "Vários elementos com desgaste incisal e restaurações.",
+        "Múltiplas ausências dentárias parciais.",
+        "Lesões cariosas interproximais em molares e incisivos.",
+        "Sinais radiográficos de alterações apicais e perda óssea em dentes específicos.",
+        "Articulação temporomandibular normal.",
+        "Seios maxilares sem alterações radiográficas."
+      ],
+      "confidence": 0.98,
+      "review_status": "final"
+    }
+  },
+  "aiProvider": "OpenAI (OCR) + OpenAI (Agent)",
+  "processedAt": "2026-03-18T16:04:52.256855Z"
+}

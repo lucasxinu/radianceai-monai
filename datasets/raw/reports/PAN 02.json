@@ -1,0 +1,91 @@
+{
+  "fileName": "LAUDO 02.jpg",
+  "extractedText": "Seios maxilares sem sinais de velamento.\nATM com forma e contorno normais.\nOsso maxilar e mandíbula sem alterações.\nDentição permanente sem sinais de agenesias, extranumerários ou degenerações foliculares.\nO exame radiográfico é um instrumento complementar de diagnóstico, é um auxiliar do exame clínico.\n\n18..  ausente\n17..  restauração radiopaca, cálculos\n16-15..  restaurações plásticas\n14..  restauração radiopaca\n13..  hígido\n12..  restauração plástica, recidiva mesial\n11..  restauração plástica, avaliar adaptação cervical\n21..  restauração plástica, recidiva distal, tratamento endodôntico parcial\n22..  hígido\n23..  restauração plástica\n24..  hígido\n25..  restauração radiopaca, recidiva distal\n26..  restauração plástica e radiopaca, recidiva mesial\n27..  restauração radiopaca\n28..  hígido\n38-37..  ausentes\n36-35..  restaurações plásticas\n34..  hígido\n33..  hígido\n32..  hígido\n31..  hígido\n41..  hígido\n42..  hígido\n43..  hígido\n44..  restauração radiopaca\n46-47..  restaurações plásticas\n48..  ausente",
+  "dentalReport": {
+    "schema_name": "fdi_iso_3950_dental_report",
+    "schema_version": "1.0",
+    "exam_type": "radiographic",
+    "patient": {
+      "patient_id": null,
+      "exam_id": null,
+      "exam_date": null,
+      "sex": null,
+      "birth_date": null,
+      "age": null
+    },
+    "exam_context": {
+      "source_type": "dental_radiology_report",
+      "modality": "panoramic_radiograph",
+      "anatomic_region": "maxilla_mandible",
+      "institution": null,
+      "report_language": "pt"
+    },
+    "global_findings": {
+      "mixed_dentition": false,
+      "malocclusion": null,
+      "crowding": null,
+      "spacing": null,
+      "crossbite": null,
+      "open_bite": null,
+      "deep_bite": null,
+      "overjet": null,
+      "overbite": null,
+      "midline_deviation": null,
+      "edentulism": null,
+      "prostheses": null,
+      "orthodontic_appliance": null,
+      "bone_pattern": "normal",
+      "tmj_findings": "normal shape and contour",
+      "sinus_findings": "maxillary sinuses without signs of opacification",
+      "soft_tissue_findings": null,
+      "notes": null
+    },
+    "odontogram": {
+      "11": "restored (plástica), evaluate cervical adaptation",
+      "12": "restored (plástica), mesial recurrence",
+      "13": "normal",
+      "14": "restored (radiopaque)",
+      "15": "restored (plástica)",
+      "16": "restored (plástica)",
+      "17": "restored (radiopaque), dental calculus",
+      "18": "missing",
+      "21": "restored (plástica), distal recurrence, partial endodontic treatment",
+      "22": "normal",
+      "23": "restored (plástica)",
+      "24": "normal",
+      "25": "restored (radiopaque), distal recurrence",
+      "26": "restored (plástica and radiopaque), mesial recurrence",
+      "27": "restored (radiopaque)",
+      "28": "normal",
+      "31": "normal",
+      "32": "normal",
+      "33": "normal",
+      "34": "normal",
+      "35": "restored (plástica)",
+      "36": "restored (plástica)",
+      "37": "missing",
+      "38": "missing",
+      "41": "normal",
+      "42": "normal",
+      "43": "normal",
+      "44": "restored (radiopaque)",
+      "45": null,
+      "46": "restored (plástica)",
+      "47": "restored (plástica)",
+      "48": "missing"
+    },
+    "impression": {
+      "summary": [
+        "Permanent dentition present without agenesis or supernumerary teeth.",
+        "Multiple restored teeth, some with evidence of recurrent caries and/or partial endodontic treatment.",
+        "Missing third molars (18, 38, 37, 48).",
+        "No evidence of maxillary sinus disease.",
+        "Temporomandibular joint with normal morphology."
+      ],
+      "confidence": 0.98,
+      "review_status": "automated_extraction_pending_clinical_review"
+    }
+  },
+  "aiProvider": "OpenAI (OCR) + OpenAI (Agent)",
+  "processedAt": "2026-03-18T15:50:18.721997Z"
+}

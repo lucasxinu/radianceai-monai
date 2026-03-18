@@ -1,0 +1,92 @@
+{
+  "fileName": "LAUDO 05.png",
+  "extractedText": "DESCRIÇÃO RADIOGRÁFICA ORTOPANTOMOGRAFIA E PERIAPICAIS\n\nSeios maxilares sem sinais de velamento.\nATM com forma e contorno normais.\nOssos maxilares e mandibular sem alterações.\nDentição permanente sem sinais de agenesias, extranumerários ou degenerações foliculares.\nO exame radiográfico é um instrumento complementar de diagnóstico, é um auxiliar do exame clínico.\n\n18.. ausente\n17.. cárie interproximal mesial\n16.. restauração plástica, recidiva distal\n15.. coroa parcialmente destruída restauração plástica, alteração apical\n14.. ausente\n13.. restauração plástica, recidiva mesial e distal, tratamento endodôntico parcial\n12.. restauração plástica, recidiva distal, tratamento endodôntico, alteração apical\n11.. restauração plástica, recidiva mesial e distal\n21.. restauração plástica, pino metálico tratamento endodôntico, reabsorção e alteração apical\n22.. restauração plástica, recidiva mesial e distal, tratamento endodôntico\n23.. ausente\n24-28 e 38-37.. ausentes\n36.. restauração plástica\n35.. restauração plástica\n34.. ausente\n33.. restauração radiopaca, cárie cervical distal\n32.. ausente\n31.. hígidos\n41.. restauração radiopaca\n42.. ausente\n43.. ausente\n45.. restos radiculares, alteração apical\n47-48.. ausentes",
+  "dentalReport": {
+    "schema_name": "dental_radiology_fdi_iso3950",
+    "schema_version": "1.0",
+    "exam_type": "radiographic_report",
+    "patient": {
+      "patient_id": null,
+      "exam_id": null,
+      "exam_date": null,
+      "sex": null,
+      "birth_date": null,
+      "age": null
+    },
+    "exam_context": {
+      "source_type": "radiographic_report",
+      "modality": "orthopantomography, periapical",
+      "anatomic_region": "maxillofacial",
+      "institution": null,
+      "report_language": "pt"
+    },
+    "global_findings": {
+      "mixed_dentition": false,
+      "malocclusion": null,
+      "crowding": null,
+      "spacing": null,
+      "crossbite": null,
+      "open_bite": null,
+      "deep_bite": null,
+      "overjet": null,
+      "overbite": null,
+      "midline_deviation": null,
+      "edentulism": null,
+      "prostheses": null,
+      "orthodontic_appliance": null,
+      "bone_pattern": "normal",
+      "tmj_findings": "normal shape and contour",
+      "sinus_findings": "maxillary sinuses clear",
+      "soft_tissue_findings": null,
+      "notes": null
+    },
+    "odontogram": {
+      "11": "restored, mesial and distal recurrent caries",
+      "12": "restored, distal recurrent caries, endodontically_treated, apical lesion",
+      "13": "restored, mesial and distal recurrent caries, partially_endodontically_treated",
+      "14": "missing",
+      "15": "crown partially destroyed, restored, apical lesion",
+      "16": "restored, distal recurrent caries",
+      "17": "mesial interproximal caries",
+      "18": "missing",
+      "21": "restored, metallic post, endodontically_treated, resorption, apical lesion",
+      "22": "restored, mesial and distal recurrent caries, endodontically_treated",
+      "23": "missing",
+      "24": "missing",
+      "25": "missing",
+      "26": "missing",
+      "27": "missing",
+      "28": "missing",
+      "31": "normal",
+      "32": "missing",
+      "33": "radio-opaque restored, cervical distal caries",
+      "34": "missing",
+      "35": "restored",
+      "36": "restored",
+      "37": "missing",
+      "38": "missing",
+      "41": "radio-opaque restored",
+      "42": "missing",
+      "43": "missing",
+      "44": null,
+      "45": "retained_root, apical lesion",
+      "46": null,
+      "47": "missing",
+      "48": "missing"
+    },
+    "impression": {
+      "summary": [
+        "Multiple missing teeth in both arches.",
+        "Apical lesions associated with teeth 12, 13, 15, 21, and 45.",
+        "Endodontic treatment in teeth 12, 13 (partial), 21, 22.",
+        "Recurrent caries in several restored teeth.",
+        "No evidence of follicular degeneration or supernumerary teeth.",
+        "Maxillary sinuses and TMJ are normal."
+      ],
+      "confidence": 0.98,
+      "review_status": "auto_extracted_no_human_review"
+    }
+  },
+  "aiProvider": "OpenAI (OCR) + OpenAI (Agent)",
+  "processedAt": "2026-03-18T15:52:48.259709Z"
+}

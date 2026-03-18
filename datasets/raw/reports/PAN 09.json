@@ -1,0 +1,83 @@
+{
+  "fileName": "LAUDO 09.jpg",
+  "extractedText": "DESCRIÇÃO RADIOGRÁFICA ORTOPANTOMOGRAFIA INTERPROXIMAIS E PERIAPICAIS\n\nSeios maxilares sem sinais de velamento.  \nATM com forma e contorno normais.  \nOsso maxilar e mandíbula sem alterações.  \nDentição permanente sem sinais de agenesias, extranumerários ou degenerações foliculares.  \nO exame radiográfico é um instrumento complementar de diagnóstico, é um auxiliar do exame clínico.\n\n18.. ausente  \n17-27.. hígidos, sinais de arredondamentos apicais  \n28-38.. ausentes  \n37-45.. hígido, sinais de arredondamentos apicais  \n46.. restauração plástica  \n47.. hígido  \n48.. ausente\n\nPeriodonto: não são observadas alterações ósseas importantes nestas tomadas radiográficas.",
+  "dentalReport": {
+    "schema_name": "FDI_Dental_Radiology_Report",
+    "schema_version": "1.0",
+    "exam_type": "radiographic",
+    "patient": null,
+    "exam_context": {
+      "source_type": "OCR text",
+      "modality": "orthopantomogram and periapical/interproximal radiographs",
+      "anatomic_region": "maxilla and mandible",
+      "institution": null,
+      "report_language": "pt"
+    },
+    "global_findings": {
+      "mixed_dentition": false,
+      "malocclusion": null,
+      "crowding": null,
+      "spacing": null,
+      "crossbite": null,
+      "open_bite": null,
+      "deep_bite": null,
+      "overjet": null,
+      "overbite": null,
+      "midline_deviation": null,
+      "edentulism": null,
+      "prostheses": null,
+      "orthodontic_appliance": null,
+      "bone_pattern": "Osso maxilar e mandíbula sem alterações; periodonto sem alterações ósseas importantes",
+      "tmj_findings": "ATM com forma e contorno normais",
+      "sinus_findings": "Seios maxilares sem sinais de velamento",
+      "soft_tissue_findings": null,
+      "notes": "Dentição permanente sem sinais de agenesias, extranumerários ou degenerações foliculares."
+    },
+    "odontogram": {
+      "11": null,
+      "12": null,
+      "13": null,
+      "14": null,
+      "15": null,
+      "16": null,
+      "17": "normal",
+      "18": "missing",
+      "21": null,
+      "22": null,
+      "23": null,
+      "24": null,
+      "25": null,
+      "26": null,
+      "27": "normal",
+      "28": "missing",
+      "31": null,
+      "32": null,
+      "33": null,
+      "34": null,
+      "35": null,
+      "36": null,
+      "37": "normal",
+      "38": "missing",
+      "41": null,
+      "42": null,
+      "43": null,
+      "44": null,
+      "45": "normal",
+      "46": "restored",
+      "47": "normal",
+      "48": "missing"
+    },
+    "impression": {
+      "summary": [
+        "Dentition predominantly permanent, with multiple missing third molars and tooth 18.",
+        "Maxillary sinuses and TMJs appear normal.",
+        "No significant bone or periodontal alterations observed.",
+        "Restoration identified on tooth 46."
+      ],
+      "confidence": 1,
+      "review_status": "unreviewed"
+    }
+  },
+  "aiProvider": "OpenAI (OCR) + OpenAI (Agent)",
+  "processedAt": "2026-03-18T15:56:27.825707Z"
+}

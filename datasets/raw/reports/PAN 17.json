@@ -1,0 +1,92 @@
+{
+  "fileName": "LAUDO 17.jpg",
+  "extractedText": "DESCRIÇÃO RADIOGRÁFICA ORTOPANTOMOGRAFIA INTERPROXIMAIS E PERIAPICAIS\n\nSeios maxilares sem sinais de velamento.\nATM com forma e contorno normais.\nOsso maxilar e mandíbula sem alterações.\nDentição permanente sem sinais de agenesias, extranumerários ou degenerações foliculares.\nO exame radiográfico é um instrumento complementar de diagnóstico, é um auxiliar do exame clínico.\n\n18..  ausente\n17-14..  restaurações radiopacas e plásticas\n13..  restauração radiopaca e plástica\n12..  restauração plástica, avaliar adaptação cervical, tratamento endodôntico parcial, alteração apical, comparar com radiografia anterior\n11..  restauração radiopaca, pino metálico, tratamento endodôntico\n21..  restauração radiopaca, pino metálico tratamento endodôntico parcial, alteração apical, comparar com radiografia anterior\n22..  restauração plástica\n23..  coroa destruída, alteração apical\n24..  restauração radiopaca, avaliar adaptação cervical, pino metálico, tratamento endodôntico parcial\n25..  restauração plástica, recidiva mesial\n26-27..  restaurações radiopacas\n\n38..  ausente\n37..  restauração radiopaca\n36..  restauração plástica\n35..  restauração plástica, lesão cervical\n34..  restauração plástica, cárie em túbulos\n33..  restauração radiopaca e plástica, recidiva distal\n32..  ausente\n31..  restauração plástica\n48..  restauração radiopaca",
+  "dentalReport": {
+    "schema_name": "FDI_Dental_Structured_Report",
+    "schema_version": "1.0",
+    "exam_type": "radiographic",
+    "patient": {
+      "patient_id": null,
+      "exam_id": null,
+      "exam_date": null,
+      "sex": null,
+      "birth_date": null,
+      "age": null
+    },
+    "exam_context": {
+      "source_type": "radiographic report",
+      "modality": "orthopantomography, periapical, interproximal",
+      "anatomic_region": "maxilla, mandible",
+      "institution": null,
+      "report_language": "pt"
+    },
+    "global_findings": {
+      "mixed_dentition": false,
+      "malocclusion": null,
+      "crowding": null,
+      "spacing": null,
+      "crossbite": null,
+      "open_bite": null,
+      "deep_bite": null,
+      "overjet": null,
+      "overbite": null,
+      "midline_deviation": null,
+      "edentulism": null,
+      "prostheses": null,
+      "orthodontic_appliance": null,
+      "bone_pattern": "normal",
+      "tmj_findings": "normal shape and contour",
+      "sinus_findings": "maxillary sinuses without opacification",
+      "soft_tissue_findings": null,
+      "notes": "Permanent dentition without evidence of agenesis, supernumeraries, or follicular degeneration."
+    },
+    "odontogram": {
+      "11": "restored, metallic post, endodontically_treated",
+      "12": "restored, partial_endodontic_treatment, apical_change",
+      "13": "restored",
+      "14": "restored",
+      "15": "restored",
+      "16": "restored",
+      "17": "restored",
+      "18": "missing",
+      "21": "restored, metallic post, partial_endodontic_treatment, apical_change",
+      "22": "restored",
+      "23": "crown_destroyed, apical_change",
+      "24": "restored, metallic post, partial_endodontic_treatment",
+      "25": "restored, mesial_recurrence",
+      "26": "restored",
+      "27": "restored",
+      "28": null,
+      "31": "restored",
+      "32": "missing",
+      "33": "restored, distal_recurrence",
+      "34": "restored, caries_in_tubules",
+      "35": "restored, cervical_lesion",
+      "36": "restored",
+      "37": "restored",
+      "38": "missing",
+      "41": null,
+      "42": null,
+      "43": null,
+      "44": null,
+      "45": null,
+      "46": null,
+      "47": null,
+      "48": "restored"
+    },
+    "impression": {
+      "summary": [
+        "Several teeth with restorations (radiopaque and plastic materials), metallic posts, and endodontic treatments (partial and complete).",
+        "Missing teeth: 18, 32, 38.",
+        "Apical alterations in 12, 21, and 23.",
+        "Recurrence at 25 (mesial) and 33 (distal), cervical lesion at 35, caries in tubules at 34.",
+        "No radiographic signs of maxillary sinus pathology, bony alterations, or TMJ disorders.",
+        "Permanent dentition, no agenesis or supernumerary teeth."
+      ],
+      "confidence": 0.99,
+      "review_status": "no explicit secondary review; direct extraction from report"
+    }
+  },
+  "aiProvider": "OpenAI (OCR) + OpenAI (Agent)",
+  "processedAt": "2026-03-18T16:04:05.569788Z"
+}

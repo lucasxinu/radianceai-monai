@@ -1,0 +1,6 @@
+[
+{
+"image": "./datasets/processed/images/sample.png",
+"label": "./datasets/processed/masks/sample_mask.png"
+}
+]

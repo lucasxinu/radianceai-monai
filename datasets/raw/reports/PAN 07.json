@@ -1,0 +1,83 @@
+{
+  "fileName": "LAUDO 07.jpg",
+  "extractedText": "DESCRIÇÃO RADIOGRÁFICA ORTOPANTOMOGRAFIA INTERPROXIMAIS E PERIAPICAIS\n\nSeios maxilares sem sinais de velamento.\nATM com forma e contorno normais.\nOsso maxilar e mandíbula sem alterações.\nDentição permanente sem sinais de agenesias, extranumerários ou degenerações foliculares.\nO exame radiográfico é um instrumento complementar de diagnóstico, é um auxiliar do exame clínico.\n\n18.. ausente\n17-16.. restaurações plásticas\n15.. restauração plástica, recidiva distal\n14.. restauração plástica\n13.. hígido\n12-11.. restaurações plásticas\n22-23.. hígidos\n24.. restaurações plásticas, lesões cervicais\n27.. hígido\n28-38.. ausentes\n37-36.. restaurações plásticas\n35-44.. hígidos\n45.. avaliar cárie interproximal distal, lesão cervical\n46-47.. restaurações plásticas\n48.. resto radicular",
+  "dentalReport": {
+    "schema_name": "dental_radiographic_report",
+    "schema_version": "1.0",
+    "exam_type": "orthopantomography",
+    "patient": null,
+    "exam_context": {
+      "source_type": "radiographic_exam_report",
+      "modality": "panoramic, interproximal and periapical",
+      "anatomic_region": "jaws, maxillary sinus, temporomandibular joint",
+      "institution": null,
+      "report_language": "pt-BR"
+    },
+    "global_findings": {
+      "mixed_dentition": false,
+      "malocclusion": null,
+      "crowding": null,
+      "spacing": null,
+      "crossbite": null,
+      "open_bite": null,
+      "deep_bite": null,
+      "overjet": null,
+      "overbite": null,
+      "midline_deviation": null,
+      "edentulism": null,
+      "prostheses": null,
+      "orthodontic_appliance": null,
+      "bone_pattern": "normal",
+      "tmj_findings": "normal",
+      "sinus_findings": "normal",
+      "soft_tissue_findings": null,
+      "notes": null
+    },
+    "odontogram": {
+      "11": "restored",
+      "12": "restored",
+      "13": "normal",
+      "14": "restored",
+      "15": "restored, recurrent distal caries",
+      "16": "restored",
+      "17": "restored",
+      "18": "missing",
+      "21": null,
+      "22": "normal",
+      "23": "normal",
+      "24": "restored, cervical lesions",
+      "25": null,
+      "26": null,
+      "27": "normal",
+      "28": "missing",
+      "31": null,
+      "32": null,
+      "33": null,
+      "34": null,
+      "35": "normal",
+      "36": "restored",
+      "37": "restored",
+      "38": "missing",
+      "41": null,
+      "42": null,
+      "43": null,
+      "44": "normal",
+      "45": "evaluate distal interproximal caries, cervical lesion",
+      "46": "restored",
+      "47": "restored",
+      "48": "residual_root"
+    },
+    "impression": {
+      "summary": [
+        "Maxillary sinuses and TMJ with normal appearance.",
+        "No jaw bone alterations detected.",
+        "Permanent dentition without agenesis or supernumeraries.",
+        "Restorations and cervical lesions identified as specified."
+      ],
+      "confidence": 1,
+      "review_status": "machine_extracted"
+    }
+  },
+  "aiProvider": "OpenAI (OCR) + OpenAI (Agent)",
+  "processedAt": "2026-03-18T15:55:00.371093Z"
+}

@@ -1,0 +1,8 @@
+task: segmentation
+image_size: [512, 512]
+batch_size: 2
+epochs: 5
+learning_rate: 0.0001
+train_manifest: ./datasets/samples/sample_manifest.json
+val_manifest: ./datasets/samples/sample_manifest.json
+checkpoint_name: segmentation_latest.pt

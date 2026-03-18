@@ -1,0 +1,6 @@
+monai
+torch
+torchvision
+numpy
+opencv-python
+pyyaml

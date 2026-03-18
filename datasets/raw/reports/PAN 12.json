@@ -1,0 +1,92 @@
+{
+  "fileName": "LAUDO 12.jpg",
+  "extractedText": "DESCRIÇÃO RADIOGRÁFICA ORTOPANTOMOGRAFIA INTERPROXIMAIS E PERIAPICAIS\n\nSeios maxilares sem sinais de velamento.\nATM com forma e contorno normais.\nOssos maxilares e mandibular sem alterações.\nDentição permanente sem sinais de agenesias, extranumerários ou degenerações foliculares.\nO exame radiográfico é um instrumento complementar de diagnóstico, é um auxiliar do exame clínico.\n\n18.. ausente\n17.. restauração radiopaca, cárie interproximal mesial, tratamento endodôntico\n16.. restauração plástica e radiopaca, recidiva distal\n15.. cárie interproximal mesial\n14.. cárie interproximal distal\n13-25.. hígidos\n26.. restauração plástica, recidiva oclusal\n27-28.. ausentes\n38.. restauração plástica\n37.. restauração radiopaca\n36.. ausente\n35-45.. hígidos\n44.. desgaste incisal\n43-35.. hígidos\n48.. ausente\n47.. restauração radiopaca, cárie interproximal distal\n46.. restauração radiopaca, avaliar cárie interproximal mesial\n\nPeriodonto: não são observadas alterações ósseas importantes nestas tomadas radiográficas.\nsinais de interferências na oclusão, importante exame complementar\nprolongamento do processo estilóide.",
+  "dentalReport": {
+    "schema_name": "dental_radiology_fdi_v1",
+    "schema_version": "1.0",
+    "exam_type": "radiographic report",
+    "patient": {
+      "patient_id": null,
+      "exam_id": null,
+      "exam_date": null,
+      "sex": null,
+      "birth_date": null,
+      "age": null
+    },
+    "exam_context": {
+      "source_type": "radiology report",
+      "modality": "panoramic and peri-apical/interproximal radiographs",
+      "anatomic_region": "maxilla and mandible",
+      "institution": null,
+      "report_language": "pt"
+    },
+    "global_findings": {
+      "mixed_dentition": false,
+      "malocclusion": null,
+      "crowding": null,
+      "spacing": null,
+      "crossbite": null,
+      "open_bite": null,
+      "deep_bite": null,
+      "overjet": null,
+      "overbite": null,
+      "midline_deviation": null,
+      "edentulism": null,
+      "prostheses": null,
+      "orthodontic_appliance": false,
+      "bone_pattern": "no alterations",
+      "tmj_findings": "ATM with normal form and contour",
+      "sinus_findings": "no sinus pathology",
+      "soft_tissue_findings": "prolonged styloid process",
+      "notes": "radiograph is a complementary diagnostic tool; occlusal interferences noted"
+    },
+    "odontogram": {
+      "11": "normal",
+      "12": "normal",
+      "13": "normal",
+      "14": "interproximal distal caries",
+      "15": "interproximal mesial caries",
+      "16": "plastic and radiopaque restoration, distal recurrence",
+      "17": "radiopaque restoration, mesial interproximal caries, endodontically treated",
+      "18": "missing",
+      "21": "normal",
+      "22": "normal",
+      "23": "normal",
+      "24": "normal",
+      "25": "normal",
+      "26": "plastic restoration, occlusal recurrence",
+      "27": "missing",
+      "28": "missing",
+      "31": "normal",
+      "32": "normal",
+      "33": "normal",
+      "34": "normal",
+      "35": "normal",
+      "36": "missing",
+      "37": "radiopaque restoration",
+      "38": "plastic restoration",
+      "41": "normal",
+      "42": "normal",
+      "43": "normal",
+      "44": "incisal wear",
+      "45": "normal",
+      "46": "radiopaque restoration, evaluate mesial interproximal caries",
+      "47": "radiopaque restoration, distal interproximal caries",
+      "48": "missing"
+    },
+    "impression": {
+      "summary": [
+        "Permanent dentition without evidence of agenesis, supernumerary teeth, or follicular degeneration.",
+        "Multiple teeth with restorations and caries.",
+        "Missing upper and lower third molars and some other posterior teeth.",
+        "TMJ and maxillary sinus normal.",
+        "Prolonged styloid process.",
+        "No major bone alterations."
+      ],
+      "confidence": 0.97,
+      "review_status": "machine_extracted_unverified"
+    }
+  },
+  "aiProvider": "OpenAI (OCR) + OpenAI (Agent)",
+  "processedAt": "2026-03-18T16:00:20.70857Z"
+}
