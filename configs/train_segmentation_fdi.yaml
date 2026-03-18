@@ -1,0 +1,15 @@
+task: segmentation_fdi
+num_classes: 53
+image_size: [512, 512]
+
+# GPU otimizado (RunPod A40/A100)
+batch_size: 4
+epochs: 100
+learning_rate: 0.0005
+num_workers: 4
+amp: true
+
+train_manifest: ./datasets/processed/manifests/train_manifest.json
+val_manifest: ./datasets/processed/manifests/val_manifest.json
+checkpoint_name: segmentation_fdi_best.pt
+class_map: ./configs/fdi_class_map.json

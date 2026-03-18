@@ -1,0 +1,4 @@
+segmentation_checkpoint: ./checkpoints/segmentation_fdi_best.pt
+image_size_segmentation: [512, 512]
+num_classes: 53
+class_map: ./configs/fdi_class_map.json
