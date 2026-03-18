@@ -1,5 +1,33 @@
-**pycache**/
+# Python
+__pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Environment
 .env
+
+# Dados processados (regeneráveis via scripts/prepare_dataset.py)
+datasets/processed/
+
+# Checkpoints e experimentos
 checkpoints/
+experiments/
 logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
