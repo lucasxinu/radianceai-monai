@@ -130,6 +130,41 @@ def _build_tooth_from_description(fdi: str, description: str) -> dict:
     return tooth
 
 
+def _normalize_state_dict(state_dict: dict) -> dict:
+    """Remove common wrappers/prefixes from checkpoint state_dict keys."""
+    cleaned = {}
+    for key, value in state_dict.items():
+        if key.startswith("module."):
+            key = key[len("module."):]
+        if key.startswith("_orig_mod."):
+            key = key[len("_orig_mod."):]
+        cleaned[key] = value
+    return cleaned
+
+
+def _load_checkpoint_state_dict(checkpoint_path: Path, device):
+    """Load checkpoint and return a normalized model state_dict."""
+    import torch
+    try:
+        ckpt = torch.load(checkpoint_path, map_location=device, weights_only=True)
+    except TypeError:
+        ckpt = torch.load(checkpoint_path, map_location=device)
+
+    if isinstance(ckpt, dict):
+        if "model_state_dict" in ckpt:
+            state_dict = ckpt["model_state_dict"]
+        elif "state_dict" in ckpt:
+            state_dict = ckpt["state_dict"]
+        elif "model" in ckpt:
+            state_dict = ckpt["model"]
+        else:
+            state_dict = ckpt
+    else:
+        state_dict = ckpt
+
+    return _normalize_state_dict(state_dict)
+
+
 def _predict_mask(image_path: Path, config_path: Path):
     try:
         import cv2
@@ -155,8 +190,13 @@ def _predict_mask(image_path: Path, config_path: Path):
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = build_segmentation_model(num_classes=num_classes).to(device)
-    ckpt = torch.load(checkpoint_path, map_location=device)
-    model.load_state_dict(ckpt["model_state_dict"])
+    state_dict = _load_checkpoint_state_dict(checkpoint_path, device)
+    missing, unexpected = model.load_state_dict(state_dict, strict=False)
+    if missing or unexpected:
+        print(
+            "⚠️  Aviso: chaves faltantes/inesperadas no checkpoint. "
+            f"missing={len(missing)} unexpected={len(unexpected)}"
+        )
     model.eval()
 
     img = cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
